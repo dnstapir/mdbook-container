@@ -1,13 +1,9 @@
 name: Build container
 
 on:
-  workflow_run:
-    workflows:
-      - "Tests"
+  push:
     branches:
-      - "main"
-    types:
-      - completed
+      - main
   release:
     types:
       - published
