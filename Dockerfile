@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:latest AS builder
 
 RUN dnf update -y && dnf upgrade -y
 RUN dnf install -y cargo python
@@ -6,8 +6,11 @@ RUN dnf install -y cargo python
 RUN cargo install mdbook
 RUN cargo install mdbook-mermaid
 
-ENV PATH="$PATH:/root/.cargo/bin"
-RUN cp /root/.cargo/bin/mdbook /usr/bin
-RUN cp /root/.cargo/bin/mdbook-mermaid /usr/bin
+
+FROM fedora:latest
+
+COPY --from=builder /root/.cargo/bin/mdbook /usr/local/bin/mdbook
+COPY --from=builder /root/.cargo/bin/mdbook-mermaid /usr/local/bin/mdbook-mermaid
+ENV PATH="$PATH:/usr/local/bin"
 
 CMD ["/bin/bash"]
